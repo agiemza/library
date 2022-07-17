@@ -54,11 +54,36 @@ main {
 
 /* Form section */
 
+.cover {
+    display: none;
+    justify-items: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    overflow: scroll;
+}
+
 form {
     display: grid;
-    padding: 25px;
+    position: relative;
+    padding: 50px;
     gap: 15px;
     border: 1px solid gray;
+    border-radius: 5px;
+    background-color: #fff;
+    z-index: 11;
+}
+
+.close-cover {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
 }
 
 .inputs-wrapper {

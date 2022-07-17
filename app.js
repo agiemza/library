@@ -57,7 +57,6 @@ function getLibrary() {
 }
 
 const addBookButton = document.querySelector(".add-book")
-
 addBookButton.addEventListener("click", e => {
     e.preventDefault()
 
@@ -68,6 +67,20 @@ addBookButton.addEventListener("click", e => {
 
     const newBook = new Book(title, author, pages, isRead)
     addToLibrary(newBook)
-
-    document.querySelector(".add-book-form").reset()
+    closeForm()
 })
+
+const cover = document.querySelector(".cover")
+
+const openFormButton = document.querySelector(".open-form")
+openFormButton.addEventListener("click", e => {
+    cover.style.cssText = "display: grid;"
+})
+
+const closeCoverButton = document.querySelector(".close-cover")
+closeCoverButton.addEventListener("click", closeForm)
+
+function closeForm() {
+    cover.style.cssText = "display: none;"
+    document.querySelector(".add-book-form").reset()
+}
