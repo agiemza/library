@@ -13,6 +13,7 @@ function addToLibrary(book) {
     const library = getLibrary()
     library.push(book)
     localStorage.library = JSON.stringify(library)
+    displayLibrary()
 }
 
 function displayLibrary() {
@@ -38,7 +39,7 @@ function createCardElement(book) {
     title.innerText = `Title: ${book.title}`
     author.innerText = `Author: ${book.author}`
     pages.innerText = `Number of pages: ${book.pages}`
-    isRead.innerText = `${book.isRead ? `Is not read yet` : `Is already red`}`
+    isRead.innerText = `${book.isRead ? `Is already read` : `Is not read yet`}`
 
     card.appendChild(title)
     card.appendChild(author)
@@ -55,8 +56,18 @@ function getLibrary() {
     return library = JSON.parse(localStorage.library)
 }
 
-document.querySelector(".add-card-button").addEventListener("click", e => {
-    const someBook = new Book("Hobbit", "Tolkien", "200", false)
-    addToLibrary(someBook)
-    displayLibrary()
+const addBookButton = document.querySelector(".add-book")
+
+addBookButton.addEventListener("click", e => {
+    e.preventDefault()
+
+    const title = document.querySelector("#title").value
+    const author = document.querySelector("#author").value
+    const pages = document.querySelector("#pages").value
+    const isRead = document.querySelector("#is-read").checked
+
+    const newBook = new Book(title, author, pages, isRead)
+    addToLibrary(newBook)
+
+    document.querySelector(".add-book-form").reset()
 })
