@@ -1,4 +1,6 @@
-const library = []
+window.onload = () => {
+    displayLibrary()
+}
 
 function Book(title, author, pages, isRead) {
     this.title = title
@@ -8,15 +10,22 @@ function Book(title, author, pages, isRead) {
 }
 
 function addToLibrary(book) {
+    const library = getLibrary()
     library.push(book)
+    localStorage.library = JSON.stringify(library)
 }
 
 function displayLibrary() {
+    const library = getLibrary()
+    const gallery = document.querySelector(".gallery")
+    gallery.innerHTML = ""
+
     library.map(book => {
         const card = createCardElement(book)
-        document.querySelector(".gallery").appendChild(card)
+        gallery.appendChild(card)
     })
 }
+
 function createCardElement(book) {
     const card = document.createElement("div")
     const title = document.createElement("div")
@@ -39,9 +48,15 @@ function createCardElement(book) {
     return card
 }
 
+function getLibrary() {
+    if (!localStorage.library) {
+        localStorage.setItem("library", "[]")
+    }
+    return library = JSON.parse(localStorage.library)
+}
+
 document.querySelector(".add-card-button").addEventListener("click", e => {
     const someBook = new Book("Hobbit", "Tolkien", "200", false)
     addToLibrary(someBook)
     displayLibrary()
 })
-
