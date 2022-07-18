@@ -23,14 +23,31 @@ function displayLibrary() {
 
     library.map((book, index) => {
         const card = createCardElement(book)
-
+       
         const removeButton = card.querySelector(".remove-button")
-        removeButton.addEventListener("click", e => {
+        removeButton.addEventListener("click", () => {
             removeBook(index)
+        })
+        
+        const statusButton = card.querySelector(".status-button")
+        statusButton.addEventListener("click", () => {
+            toggleStatus(index)
         })
 
         gallery.appendChild(card)
     })
+}
+
+function toggleStatus(index) {
+    const library = getLibrary()
+    localStorage.clear()
+    library.map((book, currentIndex) => {
+        if (currentIndex === index) {
+            book.isRead = !book.isRead
+        }
+        addToLibrary(book)
+    })
+    displayLibrary()
 }
 
 function removeBook(index) {
@@ -47,6 +64,7 @@ function removeBook(index) {
 function createCardElement(book) {
     const card = document.createElement("div")
     const removeButton = document.createElement("button")
+    const statusButton = document.createElement("button")
     const title = document.createElement("div")
     const author = document.createElement("div")
     const pages = document.createElement("div")
@@ -54,6 +72,9 @@ function createCardElement(book) {
 
     removeButton.classList.add("remove-button")
     removeButton.innerText = "x"
+
+    statusButton.classList.add("status-button")
+    statusButton.innerText = "Change status"
 
     card.classList.add("card")
 
@@ -67,6 +88,7 @@ function createCardElement(book) {
     card.appendChild(author)
     card.appendChild(pages)
     card.appendChild(isRead)
+    card.appendChild(statusButton)
 
     return card
 }
@@ -95,8 +117,9 @@ addBookButton.addEventListener("click", e => {
 const cover = document.querySelector(".cover")
 
 const openFormButton = document.querySelector(".open-form")
-openFormButton.addEventListener("click", e => {
+openFormButton.addEventListener("click", () => {
     cover.style.cssText = "display: grid;"
+    cover.querySelectorAll("input")[0].focus()
 })
 
 const closeCoverButton = document.querySelector(".close-cover")
