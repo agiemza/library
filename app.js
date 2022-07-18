@@ -21,18 +21,39 @@ function displayLibrary() {
     const gallery = document.querySelector(".gallery")
     gallery.innerHTML = ""
 
-    library.map(book => {
+    library.map((book, index) => {
         const card = createCardElement(book)
+
+        const removeButton = card.querySelector(".remove-button")
+        removeButton.addEventListener("click", e => {
+            removeBook(index)
+        })
+
         gallery.appendChild(card)
     })
 }
 
+function removeBook(index) {
+    const library = getLibrary()
+    localStorage.clear()
+    library.map((book, currentIndex) => {
+        if (currentIndex !== index) {
+            addToLibrary(book)
+        }
+    })
+    displayLibrary()
+}
+
 function createCardElement(book) {
     const card = document.createElement("div")
+    const removeButton = document.createElement("button")
     const title = document.createElement("div")
     const author = document.createElement("div")
     const pages = document.createElement("div")
     const isRead = document.createElement("div")
+
+    removeButton.classList.add("remove-button")
+    removeButton.innerText = "x"
 
     card.classList.add("card")
 
@@ -41,6 +62,7 @@ function createCardElement(book) {
     pages.innerText = `Number of pages: ${book.pages}`
     isRead.innerText = `${book.isRead ? `Is already read` : `Is not read yet`}`
 
+    card.appendChild(removeButton)
     card.appendChild(title)
     card.appendChild(author)
     card.appendChild(pages)
