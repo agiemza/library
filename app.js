@@ -2,51 +2,19 @@ window.onload = () => {
     displayLibrary()
 }
 
-function Book(title, author, pages, isRead) {
-    this.title = title
-    this.author = author
-    this.pages = pages
-    this.isRead = isRead
+// Library
+
+function getLibrary() {
+    if (!localStorage.library) {
+        localStorage.setItem("library", "[]")
+    }
+    return library = JSON.parse(localStorage.library)
 }
 
 function addToLibrary(book) {
     const library = getLibrary()
     library.push(book)
     localStorage.library = JSON.stringify(library)
-    displayLibrary()
-}
-
-function displayLibrary() {
-    const library = getLibrary()
-    const gallery = document.querySelector(".gallery")
-    gallery.innerHTML = ""
-
-    library.map((book, index) => {
-        const card = createCardElement(book)
-       
-        const removeButton = card.querySelector(".remove-button")
-        removeButton.addEventListener("click", () => {
-            removeBook(index)
-        })
-        
-        const statusButton = card.querySelector(".status-button")
-        statusButton.addEventListener("click", () => {
-            toggleStatus(index)
-        })
-
-        gallery.appendChild(card)
-    })
-}
-
-function toggleStatus(index) {
-    const library = getLibrary()
-    localStorage.clear()
-    library.map((book, currentIndex) => {
-        if (currentIndex === index) {
-            book.isRead = !book.isRead
-        }
-        addToLibrary(book)
-    })
     displayLibrary()
 }
 
@@ -59,6 +27,37 @@ function removeBook(index) {
         }
     })
     displayLibrary()
+}
+
+function displayLibrary() {
+    const library = getLibrary()
+    const gallery = document.querySelector(".gallery")
+    gallery.innerHTML = ""
+
+    library.map((book, index) => {
+        const card = createCardElement(book)
+
+        const removeButton = card.querySelector(".remove-button")
+        removeButton.addEventListener("click", () => {
+            removeBook(index)
+        })
+
+        const statusButton = card.querySelector(".status-button")
+        statusButton.addEventListener("click", () => {
+            toggleStatus(index)
+        })
+
+        gallery.appendChild(card)
+    })
+}
+
+// Book
+
+function Book(title, author, pages, isRead) {
+    this.title = title
+    this.author = author
+    this.pages = pages
+    this.isRead = isRead
 }
 
 function createCardElement(book) {
@@ -93,17 +92,21 @@ function createCardElement(book) {
     return card
 }
 
-function getLibrary() {
-    if (!localStorage.library) {
-        localStorage.setItem("library", "[]")
-    }
-    return library = JSON.parse(localStorage.library)
+function toggleStatus(index) {
+    const library = getLibrary()
+    localStorage.clear()
+    library.map((book, currentIndex) => {
+        if (currentIndex === index) {
+            book.isRead = !book.isRead
+        }
+        addToLibrary(book)
+    })
+    displayLibrary()
 }
 
-const addBookButton = document.querySelector(".add-book")
-addBookButton.addEventListener("click", e => {
-    e.preventDefault()
+// Form 
 
+function createBook() {
     const title = document.querySelector("#title").value
     const author = document.querySelector("#author").value
     const pages = document.querySelector("#pages").value
@@ -112,9 +115,22 @@ addBookButton.addEventListener("click", e => {
     const newBook = new Book(title, author, pages, isRead)
     addToLibrary(newBook)
     closeForm()
-})
+}
+
+function closeForm() {
+    cover.style.cssText = "display: none;"
+    document.querySelector(".add-book-form").reset()
+}
+
+// Popup 
 
 const cover = document.querySelector(".cover")
+
+const addBookButton = document.querySelector(".add-book")
+addBookButton.addEventListener("click", e => {
+    e.preventDefault()
+    createBook()
+})
 
 const openFormButton = document.querySelector(".open-form")
 openFormButton.addEventListener("click", () => {
@@ -124,8 +140,3 @@ openFormButton.addEventListener("click", () => {
 
 const closeCoverButton = document.querySelector(".close-cover")
 closeCoverButton.addEventListener("click", closeForm)
-
-function closeForm() {
-    cover.style.cssText = "display: none;"
-    document.querySelector(".add-book-form").reset()
-}
