@@ -61,49 +61,35 @@ function Book(title, author, pages, isRead) {
 }
 
 function createCardElement(book) {
-    const card = document.createElement("div")
-    const removeButton = document.createElement("button")
-    const statusButton = document.createElement("button")
-    const titleHeader = document.createElement("div")
-    const title = document.createElement("div")
-    const authorHeader = document.createElement("div")
-    const author = document.createElement("div")
-    const pagesHeader = document.createElement("div")
-    const pages = document.createElement("div")
-    const isRead = document.createElement("div")
+    const card = generateElement('', 'card')
+    const innerElements = [
+        generateElement("x", "remove-button", "button"),
+        generateElement("Title:"),
+        generateElement(book.title, "card-data"),
+        generateElement("Author:"),
+        generateElement(book.author,"card-data"),
+        generateElement("Number of pages:"),
+        generateElement(book.page,"card-data"),
+        generateElement(`${book.isRead ? `Is already read` : `Is not read yet`}`, book.isRead ? `is-read` : `un-read`),
+        generateElement("Change book status", "status-button", "button"),
+    ]
 
-    removeButton.classList.add("remove-button")
-    removeButton.innerText = "x"
-
-    statusButton.classList.add("status-button")
-    statusButton.innerText = "Change status"
-
-    card.classList.add("card")
-
-    title.classList.add('card-data')
-    author.classList.add('card-data')
-    pages.classList.add('card-data')
-    isRead.classList.add(`${book.isRead ? `is-read` : `un-read`}`)
-
-    titleHeader.innerText = `Title:`
-    title.innerText = `${book.title}`
-    authorHeader.innerText = `Author:`
-    author.innerText = `${book.author}`
-    pagesHeader.innerText = `Number of pages:`
-    pages.innerText = `${book.pages}`
-    isRead.innerText = `${book.isRead ? `Is already read` : `Is not read yet`}`
-
-    card.appendChild(removeButton)
-    card.appendChild(titleHeader)
-    card.appendChild(title)
-    card.appendChild(authorHeader)
-    card.appendChild(author)
-    card.appendChild(pagesHeader)
-    card.appendChild(pages)
-    card.appendChild(isRead)
-    card.appendChild(statusButton)
+    innerElements.forEach(element => {
+        card.appendChild(element)
+    });
 
     return card
+}
+
+function generateElement(innerText, className, type) {
+    const element = document.createElement(type ? type : `div`)
+    if (innerText) {
+        element.innerText = innerText
+    }
+    if (className) {
+        element.classList.add(className)
+    }
+    return element
 }
 
 function toggleStatus(index) {
