@@ -5,7 +5,29 @@
 }
 
 :root {
-    --highlight-color: rgb(250, 181, 96);
+    --highlight-color: #C44900;
+    --dark-color: #183A37;
+    --light-color: #f9f5ec;
+    --transparent-black: #04151FAA;
+    --contrast-color: #68334e;
+    font-family: arial;
+}
+
+button {
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+button:hover {
+    background-color: var(--transparent-black);
+    color: #fff;
+}
+
+button:active {
+    box-shadow: inset -1px -1px 2px gray;
 }
 
 .wrapper {
@@ -14,12 +36,40 @@
     justify-items: center;
     align-items: center;
     min-height: 100vh;
+    background-color: var(--light-color);
+}
+
+path {
+    fill: #fff;
 }
 
 /* Header section */
 
 header {
     width: 100vw;
+    display: grid;
+    gap: 15px;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    padding: 20px 35px;
+    background-color: var(--dark-color);
+    color: #fff;
+}
+
+h1 {
+    font-weight: 500;
+}
+
+.open-form {
+    display: grid;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    font-size: 30px;
+    color: #fff;
+    background: none;
+    border: none;
+    border-radius: 5px;
 }
 
 /* Gallery section */
@@ -41,7 +91,8 @@ main {
     display: grid;
     padding: 10px;
     background-color: #fff;
-    border: 1px solid red;
+    border: 2px solid var(--contrast-color);
+    border-radius: 5px;
     transition: all 0.3s;
     position: relative;
     z-index: 1;
@@ -50,6 +101,46 @@ main {
 .card:hover {
     transform: scale(1.1);
     z-index: 2;
+    box-shadow: 0px 3px 3px var(--transparent-black);
+}
+
+.card {
+    font-weight: 600;
+    font-size: 1rem ;
+    line-height: 1rem;
+}
+
+.card-data {
+    color: #000;
+    overflow: scroll;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    font-weight: normal;
+}
+
+.is-read {
+    font-weight: 400;
+    justify-self: center;
+    color: gray;
+}
+.un-read {
+    font-weight: 400;
+    justify-self: center;
+    color: var(--highlight-color);
+}
+
+.remove-button {
+    display: grid;
+    align-items: center;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 30px;
+    font-size: 12px;
+    font-weight: bold;
+    background: none;
+    color: var(--highlight-color);
 }
 
 /* Form section */
@@ -58,7 +149,7 @@ main {
     display: none;
     justify-items: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--transparent-black);
     position: fixed;
     width: 100%;
     height: 100%;
@@ -79,11 +170,15 @@ form {
 
 .close-cover {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 25px;
+    right: 25px;
     font-size: 1.2rem;
+    width: 30px;
+    display: grid;
+    align-items: center;
+    height: 30px;
     background: none;
-    border: none;
+    color: var(--highlight-color);
 }
 
 .inputs-wrapper {
@@ -102,20 +197,22 @@ label {
 }
 
 input {
-    height: 1rem;
+    padding: 5px;
+    height: 1.2rem;
 }
 
 input:focus {
     outline: none;
-    border: 1px solid gray;
+    border: 1px lightgray;
     border-radius: 2px;
     box-shadow: 0 0 3px var(--highlight-color);
 }
 
 .checkbox {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 1fr;
     align-items: center;
+    justify-items: center;
 }
 
 .switch {
@@ -168,4 +265,8 @@ input:focus {
 
 .switch input:focus+.slider {
     box-shadow: 0 0 3px var(--highlight-color);
+}
+
+.add-book {
+    height: 2.5rem;
 }
