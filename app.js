@@ -1,110 +1,106 @@
 window.onload = () => {
-    displayLibrary()
+    library.update()
 }
 
 // Library
 
-function getLibrary() {
-    if (!localStorage.library) {
-        localStorage.setItem("library", "[]")
+class Library {
+
+    constructor(_gallery) {
+        initializeLocalStorage()
+        this.gallery = _gallery
+        this.books = JSON.parse(localStorage.getItem("library"))
     }
-    return library = JSON.parse(localStorage.library)
-}
 
-function addToLibrary(book) {
-    const library = getLibrary()
-    library.push(book)
-    localStorage.library = JSON.stringify(library)
-    displayLibrary()
-}
-
-function removeBook(index) {
-    const library = getLibrary()
-    localStorage.clear()
-    library.map((book, currentIndex) => {
-        if (currentIndex !== index) {
-            addToLibrary(book)
+    static generateElement(innerText, className, type) {
+        const element = document.createElement(type ? type : `div`)
+        if (innerText) {
+            element.innerText = innerText
         }
-    })
-    displayLibrary()
-}
-
-function displayLibrary() {
-    const library = getLibrary()
-    const gallery = document.querySelector(".gallery")
-    gallery.innerHTML = ""
-
-    library.map((book, index) => {
-        const card = createCardElement(book)
-
-        const removeButton = card.querySelector(".remove-button")
-        removeButton.addEventListener("click", () => {
-            removeBook(index)
-        })
-
-        const statusButton = card.querySelector(".status-button")
-        statusButton.addEventListener("click", () => {
-            toggleStatus(index)
-        })
-
-        gallery.appendChild(card)
-    })
-}
-
-// Book
-
-function Book(title, author, pages, isRead) {
-    this.title = title
-    this.author = author
-    this.pages = pages
-    this.isRead = isRead
-}
-
-function createCardElement(book) {
-    const card = generateElement('', 'card')
-    const innerElements = [
-        generateElement("x", "remove-button", "button"),
-        generateElement("Title:"),
-        generateElement(book.title, "card-data"),
-        generateElement("Author:"),
-        generateElement(book.author,"card-data"),
-        generateElement("Number of pages:"),
-        generateElement(book.page,"card-data"),
-        generateElement(`${book.isRead ? `Is already read` : `Is not read yet`}`, book.isRead ? `is-read` : `un-read`),
-        generateElement("Change book status", "status-button", "button"),
-    ]
-
-    innerElements.forEach(element => {
-        card.appendChild(element)
-    });
-
-    return card
-}
-
-function generateElement(innerText, className, type) {
-    const element = document.createElement(type ? type : `div`)
-    if (innerText) {
-        element.innerText = innerText
-    }
-    if (className) {
-        element.classList.add(className)
-    }
-    return element
-}
-
-function toggleStatus(index) {
-    const library = getLibrary()
-    localStorage.clear()
-    library.map((book, currentIndex) => {
-        if (currentIndex === index) {
-            book.isRead = !book.isRead
+        if (className) {
+            element.classList.add(className)
         }
-        addToLibrary(book)
-    })
-    displayLibrary()
+        return element
+    }
+
+    static createCardElement(book) {
+        const card = Library.generateElement("", "card")
+        const innerElements = [
+            Library.generateElement("x", "remove-button", "button"),
+            Library.generateElement("Title:"),
+            Library.generateElement(book.title, "card-data"),
+            Library.generateElement("Author:"),
+            Library.generateElement(book.author, "card-data"),
+            Library.generateElement("Number of pages:"),
+            Library.generateElement(book.pages, "card-data"),
+            Library.generateElement(`${book.isRead ? `Is already read` : `Is not read yet`}`, book.isRead ? `is-read` : `un-read`),
+            Library.generateElement("Change book status", "status-button", "button"),
+        ]
+
+        innerElements.forEach(element => {
+            card.appendChild(element)
+        })
+        return card
+    }
+
+    update() {
+        while (this.gallery.firstChild) {
+            this.gallery.removeChild(this.gallery.firstChild)
+        }
+
+        for (const [index, data] of this.books.entries()) {
+            let string = JSON.stringify(data)
+            string = JSON.parse(string)
+            const book = new Book(...Object.values({ ...string }))
+            const card = Library.createCardElement(book)
+
+            const removeButton = card.querySelector(".remove-button")
+            removeButton.addEventListener("click", () => {
+                this.remove(index)
+            })
+
+            const statusButton = card.querySelector(".status-button")
+            statusButton.addEventListener("click", () => {
+                book.changeStatus()
+                this.books[index] = book
+                this.update()
+            })
+
+            gallery.appendChild(card)
+        }
+        localStorage.clear()
+        localStorage.setItem("library", JSON.stringify(this.books))
+
+    }
+
+    add(book) {
+        this.books.push(book)
+        this.update()
+    }
+
+    remove(index) {
+        this.books.splice(index, 1)
+        this.update()
+    }
 }
 
-// Form 
+const gallery = document.querySelector(".gallery")
+const library = new Library(gallery)
+
+// New book
+
+class Book {
+    constructor(title, author, pages, isRead) {
+        this.title = title
+        this.author = author
+        this.pages = pages
+        this.isRead = isRead
+    }
+
+    changeStatus() {
+        this.isRead = !this.isRead
+    }
+}
 
 function createBook() {
     const title = document.querySelector("#title").value
@@ -112,17 +108,13 @@ function createBook() {
     const pages = document.querySelector("#pages").value
     const isRead = document.querySelector("#is-read").checked
 
-    const newBook = new Book(title, author, pages, isRead)
-    addToLibrary(newBook)
+    const book = new Book(title, author, pages, isRead)
+
+    library.add(book)
     closeForm()
 }
 
-function closeForm() {
-    cover.style.cssText = "display: none;"
-    document.querySelector(".add-book-form").reset()
-}
-
-// Popup 
+// New book window
 
 const cover = document.querySelector(".cover")
 
@@ -140,3 +132,16 @@ openFormButton.addEventListener("click", () => {
 
 const closeCoverButton = document.querySelector(".close-cover")
 closeCoverButton.addEventListener("click", closeForm)
+
+function closeForm() {
+    cover.style.cssText = "display: none;"
+    document.querySelector(".add-book-form").reset()
+}
+
+// Local storage 
+
+function initializeLocalStorage() {
+    if (!localStorage.library) {
+        localStorage.setItem("library", "[]")
+    }
+}
