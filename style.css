@@ -80,11 +80,17 @@ main {
     display: grid;
     gap: 25px;
     width: 100%;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-auto-flow: column;
     justify-items: center;
     overflow: scroll;
     padding: 35px;
+}
+
+.no-books {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--transparent-black);
 }
 
 .card {

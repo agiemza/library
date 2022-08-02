@@ -43,15 +43,28 @@ class Library {
         return card
     }
 
-    update() {
+    displayEmptyMessage(text) {
+        if (this.books.length === 0) {
+            const message = document.createElement("div")
+            message.classList.add("no-books")
+            message.textContent = text
+            this.gallery.appendChild(message)
+        }
+    }
+
+    clearGallery() {
         while (this.gallery.firstChild) {
             this.gallery.removeChild(this.gallery.firstChild)
         }
+    }
+
+    update() {
+        this.clearGallery()
+        this.displayEmptyMessage("You have no books")
 
         for (const [index, data] of this.books.entries()) {
-            let string = JSON.stringify(data)
-            string = JSON.parse(string)
-            const book = new Book(...Object.values({ ...string }))
+
+            const book = new Book(...Object.values({ ...data }))
             const card = Library.createCardElement(book)
 
             const removeButton = card.querySelector(".remove-button")
@@ -68,9 +81,9 @@ class Library {
 
             gallery.appendChild(card)
         }
+
         localStorage.clear()
         localStorage.setItem("library", JSON.stringify(this.books))
-
     }
 
     add(book) {
